@@ -22,6 +22,7 @@ export default defineNuxtConfig({
     // "@nuxtjs/tailwindcss",
     "@nuxtjs/html-validator",
     "nuxt-snackbar",
+    '@nuxt/ui',
   ],
   vuetify: {
     moduleOptions: {
