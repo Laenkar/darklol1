@@ -7,6 +7,9 @@
          <NuxtLink to="/events">
             <MyButton>EVENTS</MyButton>
          </NuxtLink>
+         <NuxtLink to="/booking/sell">
+           <MyButton>BOOKING</MyButton>
+         </NuxtLink>
       </nav>
       <slot />
    </header>

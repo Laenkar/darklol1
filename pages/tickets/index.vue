@@ -8,16 +8,27 @@
       footer: { padding: 'p-4' }
    }">
       <template #header>
-         <h2 class="font-semibold text-xl text-gray-900 dark:text-white leading-tight">
-            Todos
+         <h2 class="font-semibold text-xl text-gray-900 leading-tight text-center">
+            Ticket Service
          </h2>
+        <div>
+          <nav style="display: flex; justify-content: center">
+            <NuxtLink to="/tickets/type">
+              <MyButton style="width: 230px; height: 30px">Type options</MyButton>
+            </NuxtLink>
+            <NuxtLink to="/tickets/discount">
+              <MyButton style="width: 230px; height: 30px">Discount options</MyButton>
+            </NuxtLink>
+          </nav>
+          <slot />
+        </div>
       </template>
 
       <!-- Filters -->
       <div class="flex items-center justify-between gap-3 px-4 py-3">
          <UInput v-model="search" icon="i-heroicons-magnifying-glass-20-solid" placeholder="Search..." />
 
-         <USelectMenu v-model="selectedStatus" :options="todoStatus" multiple placeholder="Status" class="w-40" />
+         <USelectMenu v-model="selectedStatus" :options="ticketTypes" multiple placeholder="Status" class="w-40" />
       </div>
 
       <!-- Header and Action buttons -->
@@ -29,17 +40,12 @@
          </div>
 
          <div class="flex gap-1.5 items-center">
-            <UDropdown v-if="selectedRows.length > 1" :items="actions" :ui="{ width: 'w-36' }">
-               <UButton icon="i-heroicons-chevron-down" trailing color="gray" size="xs">
-                  Mark as
-               </UButton>
-            </UDropdown>
 
-            <USelectMenu v-model="selectedColumns" :options="columns" multiple>
-               <UButton icon="i-heroicons-view-columns" color="gray" size="xs">
-                  Columns
-               </UButton>
-            </USelectMenu>
+           <USelectMenu v-model="selectedColumns" :options="columns" multiple>
+             <UButton icon="i-heroicons-view-columns" color="gray" size="xs">
+               Columns
+             </UButton>
+           </USelectMenu>
 
             <UButton icon="i-heroicons-funnel" color="gray" size="xs"
                :disabled="search === '' && selectedStatus.length === 0" @click="resetFilters">
@@ -49,21 +55,21 @@
       </div>
 
       <!-- Table -->
-      <UTable v-model="selectedRows" v-model:sort="sort" :rows="todos" :columns="columnsTable" :loading="pending"
+      <UTable v-model:sort="sort" :rows="todos" :columns="columnsTable" :loading="pending"
          sort-asc-icon="i-heroicons-arrow-up" sort-desc-icon="i-heroicons-arrow-down" sort-mode="manual" class="w-full"
          :ui="{ td: { base: 'max-w-[0] truncate' } }" @select="select">
-         <template #completed-data="{ row }">
-            <UBadge size="xs" :label="row.completed ? 'Completed' : 'In Progress'"
-               :color="row.completed ? 'emerald' : 'orange'" variant="subtle" />
-         </template>
+<!--         <template #completed-data="{ row }">-->
+<!--            <UBadge size="xs" :label="row.completed ? 'Completed' : 'In Progress'"-->
+<!--               :color="row.completed ? 'emerald' : 'orange'" variant="subtle" />-->
+<!--         </template>-->
 
-         <template #actions-data="{ row }">
-            <UButton v-if="!row.completed" icon="i-heroicons-check" size="2xs" color="emerald" variant="outline"
-               :ui="{ rounded: 'rounded-full' }" square />
+<!--         <template #actions-data="{ row }">-->
+<!--            <UButton v-if="!row.completed" icon="i-heroicons-check" size="2xs" color="emerald" variant="outline"-->
+<!--               :ui="{ rounded: 'rounded-full' }" square />-->
 
-            <UButton v-else icon="i-heroicons-arrow-path" size="2xs" color="orange" variant="outline"
-               :ui="{ rounded: 'rounded-full' }" square />
-         </template>
+<!--            <UButton v-else icon="i-heroicons-arrow-path" size="2xs" color="orange" variant="outline"-->
+<!--               :ui="{ rounded: 'rounded-full' }" square />-->
+<!--         </template>-->
       </UTable>
 
       <!-- Number of rows & Pagination -->
@@ -112,7 +118,7 @@ const columns = [{
 }, {
    key: 'creationDate',
    label: 'Creation date',
-   sortable: false
+   sortable: true
 },{
    key: 'price',
    label: 'Price',
@@ -151,27 +157,35 @@ function select(row) {
 }
 
 // Actions
-const actions = [
-   [{
-      key: 'completed',
-      label: 'Completed',
-      icon: 'i-heroicons-check'
-   }], [{
-      key: 'uncompleted',
-      label: 'In Progress',
-      icon: 'i-heroicons-arrow-path'
-   }]
-]
+// const types = [
+//    [{
+//       key: 'VIP',
+//       label: 'VIP',
+//       icon: 'i-heroicons-check'
+//    }], [{
+//       key: 'uncompleted',
+//       label: 'In Progress',
+//       icon: 'i-heroicons-arrow-path'
+//    }]
+// ]
 
 // Filters
-const todoStatus = [{
-   key: 'uncompleted',
-   label: 'In Progress',
-   value: false
+const ticketTypes = [{
+   key: 'VIP',
+   label: 'VIP',
+   value: 'VIP'
 }, {
-   key: 'completed',
-   label: 'Completed',
-   value: true
+   key: 'USUAL',
+   label: 'Usual',
+   value: 'USUAL'
+}, {
+  key: 'BUDGETARY',
+  label: 'Budgetary',
+  value: 'BUDGETARY'
+}, {
+  key: 'CHEAP',
+  label: 'Cheap',
+  value: 'CHEAP'
 }]
 
 const search = ref('')
