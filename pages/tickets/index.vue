@@ -27,8 +27,10 @@
       <!-- Filters -->
       <div class="flex items-center justify-between gap-3 px-4 py-3">
          <UInput v-model="search" icon="i-heroicons-magnifying-glass-20-solid" placeholder="Search..." />
-
-         <USelectMenu v-model="selectedStatus" :options="ticketTypes" multiple placeholder="Status" class="w-40" />
+         <NuxtLink to="/tickets/ticketId">
+           <MyButton style="width: 170px; height: 30px; ">Create ticket</MyButton>
+         </NuxtLink>
+<!--         <USelectMenu v-model="selectedStatus" :options="ticketTypes" multiple placeholder="Type" class="w-40" />-->
       </div>
 
       <!-- Header and Action buttons -->

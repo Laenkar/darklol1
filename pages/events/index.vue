@@ -16,7 +16,9 @@
     <!-- Filters -->
     <div class="flex items-center justify-between gap-3 px-4 py-3">
       <UInput v-model="search" icon="i-heroicons-magnifying-glass-20-solid" placeholder="Search..." />
-
+      <NuxtLink to="/events/eventId">
+        <MyButton style="width: 170px; height: 30px; ">Create event</MyButton>
+      </NuxtLink>
 <!--      <USelectMenu v-model="selectedStatus" :options="todoStatus" multiple placeholder="Status" class="w-40" />-->
     </div>
 
