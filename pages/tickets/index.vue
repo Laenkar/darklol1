@@ -104,6 +104,13 @@
 </template>
 
 <script lang="ts" setup>
+const config = useRuntimeConfig();
+
+console.log('base url is' , config.public.baseURL)
+const { data: count } = await useFetch(config.public.baseURL + '/hello')
+console.log({ data: count })
+
+// Table scripts
 // Columns
 const columns = [{
    key: 'id',

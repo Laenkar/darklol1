@@ -12,7 +12,7 @@ export default {
 #workspace {
    overflow: hidden;
    position: relative;
-   top: 0;
+   top: 50px;
    margin: 0 auto;
    width: calc(100% - 100px);
 }

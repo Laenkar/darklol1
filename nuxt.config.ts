@@ -32,4 +32,9 @@ export default defineNuxtConfig({
       /* vuetify options */
     },
   },
+  runtimeConfig: {
+    public: {
+      baseURL: 'https://localhost:9443',
+    },
+  },
 });
