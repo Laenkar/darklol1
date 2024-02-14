@@ -90,7 +90,7 @@
 const config = useRuntimeConfig();
 
 // const url = 'https://catfact.ninja/fact'
-const url = 'https://127.0.0.1:9443/tickets'
+const url = 'https://localhost:9443/tickets'
 console.log('================')
 console.log('base url is' , url)
 const { data: count } = await useFetch(url)
@@ -101,6 +101,7 @@ console.log('base url is' , url2)
 const { data: count2 } = await useFetch('https://catfact.ninja/fact')
 console.log(count2)
 console.log('================')
+const  data = await useFetch(config.public.baseURL + '/tickets')
 // Table scripts
 // Columns
 const columns = [{
