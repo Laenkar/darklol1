@@ -57,48 +57,31 @@
       </div>
 
       <!-- Table -->
-      <UTable v-model:sort="sort" :rows="todos" :columns="columnsTable" :loading="pending"
-         sort-asc-icon="i-heroicons-arrow-up" sort-desc-icon="i-heroicons-arrow-down" sort-mode="manual" class="w-full"
-         :ui="{ td: { base: 'max-w-[0] truncate' } }" @select="select">
-<!--         <template #completed-data="{ row }">-->
-<!--            <UBadge size="xs" :label="row.completed ? 'Completed' : 'In Progress'"-->
-<!--               :color="row.completed ? 'emerald' : 'orange'" variant="subtle" />-->
-<!--         </template>-->
+<!--      <UTable v-model:sort="sort" :rows="todos" :columns="columnsTable" :loading="pending"-->
+<!--         sort-asc-icon="i-heroicons-arrow-up" sort-desc-icon="i-heroicons-arrow-down" sort-mode="manual" class="w-full"-->
+<!--         :ui="{ td: { base: 'max-w-[0] truncate' } }" @select="select">-->
+<!--&lt;!&ndash;         <template #completed-data="{ row }">&ndash;&gt;-->
+<!--&lt;!&ndash;            <UBadge size="xs" :label="row.completed ? 'Completed' : 'In Progress'"&ndash;&gt;-->
+<!--&lt;!&ndash;               :color="row.completed ? 'emerald' : 'orange'" variant="subtle" />&ndash;&gt;-->
+<!--&lt;!&ndash;         </template>&ndash;&gt;-->
 
-<!--         <template #actions-data="{ row }">-->
-<!--            <UButton v-if="!row.completed" icon="i-heroicons-check" size="2xs" color="emerald" variant="outline"-->
-<!--               :ui="{ rounded: 'rounded-full' }" square />-->
+<!--&lt;!&ndash;         <template #actions-data="{ row }">&ndash;&gt;-->
+<!--&lt;!&ndash;            <UButton v-if="!row.completed" icon="i-heroicons-check" size="2xs" color="emerald" variant="outline"&ndash;&gt;-->
+<!--&lt;!&ndash;               :ui="{ rounded: 'rounded-full' }" square />&ndash;&gt;-->
 
-<!--            <UButton v-else icon="i-heroicons-arrow-path" size="2xs" color="orange" variant="outline"-->
-<!--               :ui="{ rounded: 'rounded-full' }" square />-->
-<!--         </template>-->
-      </UTable>
+<!--&lt;!&ndash;            <UButton v-else icon="i-heroicons-arrow-path" size="2xs" color="orange" variant="outline"&ndash;&gt;-->
+<!--&lt;!&ndash;               :ui="{ rounded: 'rounded-full' }" square />&ndash;&gt;-->
+<!--&lt;!&ndash;         </template>&ndash;&gt;-->
+<!--      </UTable>-->
 
+      <div>
+        <h1>Data is {{count}}</h1>
+        <h2>Data is {{count2}}</h2>
+
+      </div>
       <!-- Number of rows & Pagination -->
       <template #footer>
-         <div class="flex flex-wrap justify-between items-center">
-            <div>
-               <span class="text-sm leading-5">
-                  Showing
-                  <span class="font-medium">{{ pageFrom }}</span>
-                  to
-                  <span class="font-medium">{{ pageTo }}</span>
-                  of
-                  <span class="font-medium">{{ pageTotal }}</span>
-                  results
-               </span>
-            </div>
 
-            <UPagination v-model="page" :page-count="pageCount" :total="pageTotal" :ui="{
-               wrapper: 'flex items-center gap-1',
-               rounded: '!rounded-full min-w-[32px] justify-center',
-               default: {
-                  activeButton: {
-                     variant: 'outline'
-                  }
-               }
-            }" />
-         </div>
       </template>
    </UCard>
 </template>
@@ -106,10 +89,18 @@
 <script lang="ts" setup>
 const config = useRuntimeConfig();
 
-console.log('base url is' , config.public.baseURL)
-const { data: count } = await useFetch(config.public.baseURL + '/hello')
-console.log({ data: count })
-
+// const url = 'https://catfact.ninja/fact'
+const url = 'https://127.0.0.1:9443/tickets'
+console.log('================')
+console.log('base url is' , url)
+const { data: count } = await useFetch(url)
+console.log(count)
+console.log('================')
+const url2 = 'https://catfact.ninja/fact'
+console.log('base url is' , url2)
+const { data: count2 } = await useFetch('https://catfact.ninja/fact')
+console.log(count2)
+console.log('================')
 // Table scripts
 // Columns
 const columns = [{
@@ -216,31 +207,6 @@ const resetFilters = () => {
    selectedStatus.value = []
 }
 
-// Pagination
-const sort = ref({ column: 'id', direction: 'asc' as const })
-const page = ref(1)
-const pageCount = ref(10)
-const pageTotal = ref(200) // This value should be dynamic coming from the API
-const pageFrom = computed(() => (page.value - 1) * pageCount.value + 1)
-const pageTo = computed(() => Math.min(page.value * pageCount.value, pageTotal.value))
-
-// Data
-const { data: todos, pending } = await useLazyAsyncData<{
-   id: number
-   title: string
-   completed: string
-}[]>('todos', () => ($fetch as any)(`https://jsonplaceholder.typicode.com/todos${searchStatus.value}`, {
-   query: {
-      q: search.value,
-      '_page': page.value,
-      '_limit': pageCount.value,
-      '_sort': sort.value.column,
-      '_order': sort.value.direction
-   }
-}), {
-   default: () => [],
-   watch: [page, search, searchStatus, pageCount, sort]
-})
 </script>
 
 <style lang="less"></style>
