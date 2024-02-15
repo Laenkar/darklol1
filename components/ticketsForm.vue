@@ -7,9 +7,8 @@
       body: { padding: '', base: 'divide-y divide-gray-200 dark:divide-gray-700' },
       footer: { padding: 'p-4' }
    }">
-     <template #header>
-       <div class="flex items-center justify-between gap-3 px-4 py-3">
-         <MyButton style="width: 170px; height: 30px; background-color: forestgreen">Create ticket</MyButton>
+     <template v-show="currentRoute !== '/tickets'" #header">
+       <div class="flex items-center justify-between gap-3 px-4 py-3" v-show="currentRoute !== '/tickets'">
          <MyButton style="width: 170px; height: 30px; background-color: brown">Delete ticket</MyButton>
          <MyButton style="width: 170px; height: 30px; background-color: orange">Update ticket</MyButton>
        </div>
@@ -84,6 +83,10 @@
    </UCard>
 </template>
 <script setup lang="ts">
+
+//Store
+const currentRoute = useRoute().path
+
 import type { FormError, FormSubmitEvent } from '#ui/types'
 
 const state = reactive({

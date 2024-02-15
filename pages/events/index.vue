@@ -136,29 +136,7 @@ function select(row) {
   }
 }
 
-// // Actions
-// const actions = [
-//   [{
-//     key: 'completed',
-//     label: 'Completed',
-//     icon: 'i-heroicons-check'
-//   }], [{
-//     key: 'uncompleted',
-//     label: 'In Progress',
-//     icon: 'i-heroicons-arrow-path'
-//   }]
-// ]
-//
-// // Filters
-// const todoStatus = [{
-//   key: 'uncompleted',
-//   label: 'In Progress',
-//   value: false
-// }, {
-//   key: 'completed',
-//   label: 'Completed',
-//   value: true
-// }]
+
 
 const search = ref('')
 const selectedStatus = ref([])

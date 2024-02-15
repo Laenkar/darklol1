@@ -13,6 +13,8 @@
          </h2>
         <div>
           <nav style="display: flex; justify-content: center">
+            <MyButton v-on:click="revertFormActive" v-show="!formActive" style="width: 230px; height: 30px">Create ticket</MyButton>
+            <MyButton v-on:click="revertFormActive" v-show="formActive" style="width: 230px; height: 30px">Go to table</MyButton>
             <NuxtLink to="/tickets/type">
               <MyButton style="width: 230px; height: 30px">Type options</MyButton>
             </NuxtLink>
@@ -25,152 +27,136 @@
       </template>
 
       <!-- Filters -->
-      <div class="flex items-center justify-between gap-3 px-4 py-3">
-         <UInput v-model="search" icon="i-heroicons-magnifying-glass-20-solid" placeholder="Search..." />
-         <NuxtLink to="/tickets/ticketId">
-           <MyButton style="width: 170px; height: 30px; ">Create ticket</MyButton>
-         </NuxtLink>
-<!--         <USelectMenu v-model="selectedStatus" :options="ticketTypes" multiple placeholder="Type" class="w-40" />-->
-      </div>
+<!--      <div class="flex items-center gap-3 px-4 py-3">-->
+<!--           <MyButton v-on:click="revertFormActive" style="width: 170px; height: 30px; ">Create ticket</MyButton>-->
+<!--      </div>-->
 
-      <!-- Header and Action buttons -->
-      <div class="flex justify-between items-center w-full px-4 py-3">
-         <div class="flex items-center gap-1.5">
-            <span class="text-sm leading-5">Rows per page:</span>
 
-            <USelect v-model="pageCount" :options="[3, 5, 10, 20, 30, 40]" class="me-2 w-20" size="xs" />
-         </div>
+      <UTable v-show="!formActive" :rows="tickets" :columns="columns" :loading="pending" @select="select" :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }">
 
-         <div class="flex gap-1.5 items-center">
+      </UTable>
+      <tickets-form v-show="formActive">
 
-           <USelectMenu v-model="selectedColumns" :options="columns" multiple>
-             <UButton icon="i-heroicons-view-columns" color="gray" size="xs">
-               Columns
-             </UButton>
-           </USelectMenu>
+      </tickets-form>
 
-            <UButton icon="i-heroicons-funnel" color="gray" size="xs"
-               :disabled="search === '' && selectedStatus.length === 0" @click="resetFilters">
-               Reset
-            </UButton>
-         </div>
-      </div>
 
-      <!-- Table -->
-<!--      <UTable v-model:sort="sort" :rows="todos" :columns="columnsTable" :loading="pending"-->
-<!--         sort-asc-icon="i-heroicons-arrow-up" sort-desc-icon="i-heroicons-arrow-down" sort-mode="manual" class="w-full"-->
-<!--         :ui="{ td: { base: 'max-w-[0] truncate' } }" @select="select">-->
-<!--&lt;!&ndash;         <template #completed-data="{ row }">&ndash;&gt;-->
-<!--&lt;!&ndash;            <UBadge size="xs" :label="row.completed ? 'Completed' : 'In Progress'"&ndash;&gt;-->
-<!--&lt;!&ndash;               :color="row.completed ? 'emerald' : 'orange'" variant="subtle" />&ndash;&gt;-->
-<!--&lt;!&ndash;         </template>&ndash;&gt;-->
-
-<!--&lt;!&ndash;         <template #actions-data="{ row }">&ndash;&gt;-->
-<!--&lt;!&ndash;            <UButton v-if="!row.completed" icon="i-heroicons-check" size="2xs" color="emerald" variant="outline"&ndash;&gt;-->
-<!--&lt;!&ndash;               :ui="{ rounded: 'rounded-full' }" square />&ndash;&gt;-->
-
-<!--&lt;!&ndash;            <UButton v-else icon="i-heroicons-arrow-path" size="2xs" color="orange" variant="outline"&ndash;&gt;-->
-<!--&lt;!&ndash;               :ui="{ rounded: 'rounded-full' }" square />&ndash;&gt;-->
-<!--&lt;!&ndash;         </template>&ndash;&gt;-->
-<!--      </UTable>-->
-
-      <div>
-        <h1>Data is {{count}}</h1>
-        <h2>Data is {{count2}}</h2>
-
-      </div>
-      <!-- Number of rows & Pagination -->
       <template #footer>
 
       </template>
    </UCard>
+
 </template>
 
 <script lang="ts" setup>
+
+//Store
+const formActive = ref(false)
+function revertFormActive() {
+  formActive.value = !formActive.value
+}
+const currentRoute = useRoute().path
+
 const config = useRuntimeConfig();
 
-// const url = 'https://catfact.ninja/fact'
+// let count_default = [
+//   {
+//     "id": 2,
+//     "name": "10 ряд 1 место",
+//     "coordinates": {
+//       "x": 500,
+//       "y": 200.0
+//     },
+//     "creationDate": "2024-02-14",
+//     "price": 1500.0,
+//     "discount": 50.0,
+//     "refundable": true,
+//     "type": "USUAL",
+//     "event": {
+//       "id": 1,
+//       "name": "Восемь против ДПШ",
+//       "date": "2024-02-28",
+//       "minAge": 6,
+//       "eventType": "BASKETBALL"
+//     }
+//   }
+// ]
 const url = 'https://localhost:9443/tickets'
-console.log('================')
 console.log('base url is' , url)
-const { data: count } = await useFetch(url)
-console.log(count)
-console.log('================')
-const url2 = 'https://catfact.ninja/fact'
-console.log('base url is' , url2)
-const { data: count2 } = await useFetch('https://catfact.ninja/fact')
-console.log(count2)
-console.log('================')
-const  data = await useFetch(config.public.baseURL + '/tickets')
-// Table scripts
+const {pending, data: tickets, refresh} = await useFetch(url, {
+  lazy: true,
+  server: false,
+  // immediate: false,
+  default: () => []
+})
+
+// const offset = ref(0)
+// const limit = ref(5)
+// const filter = ref('id[gt]=2')
+// const sort = ref('type')
+//
+// const { data: count, pending } = await useLazyAsyncData<{
+//   id: number
+//   name: string,
+//   coordinates: string,
+//   creationDate: string,
+//   price: number,
+//   discount: number,
+//   refundable: boolean,
+//   type: string,
+//   event: string
+// }[]>('count', () => ($fetch as any)(url, {
+//   query: {
+//     '_offset': offset.value,
+//     '_limit': limit.value,
+//     '_filter': filter.value,
+//     '_sort': sort.value
+//   }
+// }), {
+//   default: () => [],
+//   watch: [offset, limit, filter, sort]
+// })
+console.log(tickets)
+
 // Columns
 const columns = [{
    key: 'id',
    label: '#',
-   sortable: true
+   sortable: false
 }, {
    key: 'name',
    label: 'Name',
-   sortable: true
+   sortable: false
 }, {
    key: 'coordinates',
    label: 'Coordinates',
-   sortable: true
+   sortable: false
 }, {
    key: 'creationDate',
    label: 'Creation date',
-   sortable: true
+   sortable: false
 },{
    key: 'price',
    label: 'Price',
-   sortable: true
+   sortable: false
 },{
    key: 'discount',
    label: 'Discount',
-   sortable: true
+   sortable: false
 },{
    key: 'refundable',
    label: 'Refundable',
-   sortable: true
+   sortable: false
 },{
    key: 'type',
    label: 'Type',
-   sortable: true
+   sortable: false
 },{
    key: 'event',
    label: 'Event',
-   sortable: true
+   sortable: false
 },]
 
-const selectedColumns = ref(columns)
-const columnsTable = computed(() => columns.filter((column) => selectedColumns.value.includes(column)))
 
-// Selected Rows
-const selectedRows = ref([])
-
-function select(row) {
-   const index = selectedRows.value.findIndex((item) => item.id === row.id)
-   if (index === -1) {
-      selectedRows.value.push(row)
-   } else {
-      selectedRows.value.splice(index, 1)
-   }
-}
-
-// Actions
-// const types = [
-//    [{
-//       key: 'VIP',
-//       label: 'VIP',
-//       icon: 'i-heroicons-check'
-//    }], [{
-//       key: 'uncompleted',
-//       label: 'In Progress',
-//       icon: 'i-heroicons-arrow-path'
-//    }]
-// ]
-
-// Filters
 const ticketTypes = [{
    key: 'VIP',
    label: 'VIP',
@@ -188,25 +174,6 @@ const ticketTypes = [{
   label: 'Cheap',
   value: 'CHEAP'
 }]
-
-const search = ref('')
-const selectedStatus = ref([])
-const searchStatus = computed(() => {
-   if (selectedStatus.value?.length === 0) {
-      return ''
-   }
-
-   if (selectedStatus?.value?.length > 1) {
-      return `?completed=${selectedStatus.value[0].value}&completed=${selectedStatus.value[1].value}`
-   }
-
-   return `?completed=${selectedStatus.value[0].value}`
-})
-
-const resetFilters = () => {
-   search.value = ''
-   selectedStatus.value = []
-}
 
 </script>
 
