@@ -1,6 +1,15 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   //   devtools: { enabled: true }
+  ui: {
+    notifications: {
+      // Show toasts at the top right of the screen
+      position: 'top-0 bottom-auto'
+    }
+  },
+  colormode: {
+    preference: 'light'
+  },
   app: {
     head: {
       title: "darklol",
