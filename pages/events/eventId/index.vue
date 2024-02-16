@@ -9,8 +9,8 @@
    }">
     <template #header>
       <div class="flex items-center justify-between gap-3 px-4 py-3">
-        <MyButton style="width: 170px; height: 30px; background-color: forestgreen">Create event</MyButton>
-        <MyButton style="width: 170px; height: 30px; background-color: brown">Delete event</MyButton>
+        <MyButton style="width: 170px; height: 30px; background-color: forestgreen">Создать мероприятие</MyButton>
+        <MyButton style="width: 170px; height: 30px; background-color: brown"></MyButton>
         <MyButton style="width: 170px; height: 30px; background-color: orange">Update event</MyButton>
       </div>
     </template>
@@ -36,7 +36,7 @@
 
       <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
         <UFormGroup label="Minimal age" name="minAge" :ui="{ label: { base: 'text-black font-semibold' } }">
-          <UInput v-model="state.minAge" type="number" step="1" min="0" max="21"/>
+          <UInput v-model="state.minAge" type="number" step="1" min="0" max="35"/>
         </UFormGroup>
       </div>
 
@@ -86,14 +86,16 @@ const eventTypes = [
   {
     label: "Theatre performance",
     value: "THEATRE_PERFORMANCE"
+  },
+  {
+    label: "(нет)",
+    value: ""
   }
 ]
 
 const validate = (state: any): FormError[] => {
   const errors = []
   if (!state.name) errors.push({ path: 'name', message: 'Field is required!' })
-
-  if (state.name.trim.length === 0) errors.push({ path: 'name', message: 'String cannot be empty!' })
 
   if (state.name.length > 255) errors.push({ path: 'name', message: 'Name is too long! 255 characters max' })
 

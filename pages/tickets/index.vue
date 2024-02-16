@@ -85,7 +85,7 @@
               :rows="tickets"
               :columns="columns"
               :loading="pending"
-              @select="printIdOnClick"
+              @select="goToIdOnClick"
               :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
               :ui="{td: { color: 'text-black dark:text-black' }}"
       >
@@ -153,23 +153,11 @@
           <UButton type="submit"
                    color="purple"
                    class="h-16 w-40 rounded-xl font-semibold text-xl justify-center">
-            Submit
+            Применить
           </UButton>
        </div>
 
       </UForm>
-       <UModal v-model="submitClick" prevent-close >
-         <div class="mx-auto max-w-md justify-items-center grid">
-         <div class="mx-auto max-w-md p-4 text-lg text-center font-semibold">
-           {{createTicketMessage}}
-         </div>
-         <UButton color="purple"
-                  class="rounded-xl font-semibold text-xl justify-center h-12 w-16"
-                  @click="submitClick=false"
-                  label="OK"
-         />
-         </div>
-       </UModal>
       </UCard>
 
 
@@ -177,13 +165,13 @@
         <div class="flex flex-wrap justify-between items-center">
           <div>
                <span class="text-sm leading-5">
-                  Showing
+                  Показано с
                   <span class="font-medium">{{ pageFrom }}</span>
-                  to
+                  по
                   <span class="font-medium">{{ pageTo }}</span>
-                  of
+                  из
                   <span class="font-medium">{{ pageTotal }}</span>
-                  results
+                  результатов
                </span>
           </div>
 
@@ -224,12 +212,18 @@
         </div>
       </template>
    </UCard>
-<!--  <UNotifications-->
-<!--    :ui="{-->
-<!--    title: 'text-black font-italic'-->
-<!--    }"-->
-
-<!--  />-->
+  <UModal v-model="submitClick" prevent-close >
+    <div class="mx-auto max-w-md justify-items-center grid">
+      <div class="mx-auto max-w-md p-4 text-lg text-center font-semibold">
+        {{createTicketMessage}}
+      </div>
+      <UButton color="purple"
+               class="rounded-xl font-semibold text-xl justify-center h-12 w-16"
+               @click="refreshAll"
+               label="OK"
+      />
+    </div>
+  </UModal>
 </template>
 
 <script lang="ts" setup>
@@ -288,8 +282,17 @@ function applySort () {
   sort.value = sortMode.value + sortField.value;
 }
 
-async function printIdOnClick (row) {
+async function goToIdOnClick (row) {
   await navigateTo(`/tickets/${row.id}`)
+}
+
+const refreshAll = async () => {
+  submitClick.value = false
+  try {
+    await refreshNuxtData()
+  } finally {
+    submitClick.value = false
+  }
 }
 
 
@@ -332,11 +335,12 @@ const filterFields = [{
 //    label: 'Координаты',
 //    value: 'coordinates'
 // },
+//   {
+//    key: 'creationDate',
+//    label: 'Дата создания',
+//    value: 'creationDate'
+// },
   {
-   key: 'creationDate',
-   label: 'Дата создания',
-   value: 'creationDate'
-},{
    key: 'price',
    label: 'Цена',
    value: 'price'
@@ -449,11 +453,11 @@ const state = reactive ({
 
 const boolOption = [
   {
-    label: "True",
+    label: "Да",
     value: true
   },
   {
-    label: "False",
+    label: "Нет",
     value: false
   }
 ]
@@ -530,5 +534,3 @@ async function onSubmit () {
 }
 
 </script>
-
-<style lang="less"></style>

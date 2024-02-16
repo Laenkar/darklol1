@@ -11,68 +11,74 @@
       <h1 class="text-4xl text-center font-semibold">Просмотр билета</h1>
     <div class="flex justify-end gap-3 px-4 py-3">
       <UButton @click="isDeleteMode=true" color="red" class="h-8 w-36 rounded-xl font-semibold justify-center">Удалить билет</UButton>
-      <UButton @click="isUpdateMode=true" color="yellow" class="h-8 w-36 rounded-xl font-semibold justify-center">Обновить билет</UButton>
+      <UButton @click="revertUpdateMode" color="yellow" class="h-8 w-36 rounded-xl font-semibold justify-center">Обновить билет</UButton>
     </div>
     </template>
 
 <UForm :validate="validate" :state="state" class="grid grid-cols-5 grid-flow-row gap-4 justify-between" @submit="onSubmit" >
 
   <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-    <UFormGroup label="Id" name="id" :ui="{ label: { base: 'text-black font-semibold' } }">
+    <UFormGroup label="Номер" name="id" :ui="{ label: { base: 'text-black font-semibold' } }">
       <UInput v-model="state.id" disabled/>
     </UFormGroup>
   </div>
 
 <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-  <UFormGroup label="Name" name="name" :ui="{ label: { base: 'text-black font-semibold' } }">
+  <UFormGroup label="Наименование" name="name" :ui="{ label: { base: 'text-black font-semibold' } }">
     <UInput v-model="state.name" type="text" :disabled="!isUpdateMode"/>
   </UFormGroup>
 </div>
 
 <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-  <UFormGroup label="Coordinate X" name="coordinateX" :ui="{ label: { base: 'text-black font-semibold' } }">
+  <UFormGroup label="Координата X" name="coordinateX" :ui="{ label: { base: 'text-black font-semibold' } }">
     <UInput v-model="state.coordinateX" type="number" step="1" min="-686" :disabled="!isUpdateMode"/>
   </UFormGroup>
 </div>
 
 <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-  <UFormGroup label="Coordinate Y" name="coordinateY" :ui="{ label: { base: 'text-black font-semibold' } }">
+  <UFormGroup label="Координата Y" name="coordinateY" :ui="{ label: { base: 'text-black font-semibold' } }">
     <UInput v-model="state.coordinateY" type="number" step="0.01" :disabled="!isUpdateMode"/>
   </UFormGroup>
 </div>
 
+  <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
+    <UFormGroup label="Дата создания" name="creationDate" :ui="{ label: { base: 'text-black font-semibold' } }">
+      <UInput v-model="state.creationDate" type="date" step="0.01" disabled/>
+    </UFormGroup>
+  </div>
+
 <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-  <UFormGroup label="Price" name="price" :ui="{ label: { base: 'text-black font-semibold' } }">
+  <UFormGroup label="Цена" name="price" :ui="{ label: { base: 'text-black font-semibold' } }">
     <UInput v-model="state.price" type="number" step="0.01" min="1" max="1000000000" :disabled="!isUpdateMode"/>
   </UFormGroup>
 </div>
 
 <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-  <UFormGroup label="Discount" name="discount" :ui="{ label: { base: 'text-black font-semibold' } }">
+  <UFormGroup label="Скидка" name="discount" :ui="{ label: { base: 'text-black font-semibold' } }">
     <UInput v-model="state.discount" type="number" step="0.01" min="1" max="100" :disabled="!isUpdateMode"/>
   </UFormGroup>
 </div>
 
 <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-  <UFormGroup label="Refundable" name="refundable" :ui="{ label: { base: 'text-black font-semibold' } }">
+  <UFormGroup label="Возвратный" name="refundable" :ui="{ label: { base: 'text-black font-semibold' } }">
     <USelect v-model="state.refundable" :options="boolOption" :disabled="!isUpdateMode"/>
   </UFormGroup>
 </div>
 
 <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-  <UFormGroup label="Type" name="type" :ui="{ label: { base: 'text-black font-semibold' } }">
+  <UFormGroup label="Тип" name="type" :ui="{ label: { base: 'text-black font-semibold' } }">
     <USelect v-model="state.type" :options="ticketTypes" :disabled="!isUpdateMode"/>
   </UFormGroup>
 </div>
 
 <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-  <UFormGroup label="Event id" name="eventId" :ui="{ label: { base: 'text-black font-semibold' } }">
+  <UFormGroup label="Номер события" name="eventId" :ui="{ label: { base: 'text-black font-semibold' } }">
     <UInput v-model="state.eventId" :disabled="!isUpdateMode"/>
   </UFormGroup>
 </div>
 
   <div v-show="!isUpdateMode" class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-    <UFormGroup  label="Event name" name="eventId" :ui="{ label: { base: 'text-black font-semibold' } }">
+    <UFormGroup  label="Событие" name="eventId" :ui="{ label: { base: 'text-black font-semibold' } }">
       <UInput v-model="state.eventName" disabled/>
     </UFormGroup>
   </div>
@@ -164,6 +170,7 @@ const state = reactive ({
   name: undefined,
   coordinateX: undefined,
   coordinateY: undefined,
+  creationDate: undefined,
   price: undefined,
   discount: undefined,
   refundable: undefined,
@@ -176,14 +183,15 @@ watch(ticket, (newValue) => {
   if (newValue) {
     state.id = newValue.id
     state.name = newValue.name
-    state.coordinateX = newValue.coordinates?.x?.toString()
-    state.coordinateY = newValue.coordinates?.y?.toString()
-    state.price = newValue.price?.toString()
-    state.discount = newValue.discount?.toString()
-    state.refundable = newValue.refundable?.toString()
+    state.coordinateX = newValue.coordinates?.x
+    state.coordinateY = newValue.coordinates?.y
+    state.price = newValue.price
+    state.creationDate = newValue.creationDate
+    state.discount = newValue.discount
+    state.refundable = newValue.refundable
     state.type = newValue.type
-    state.eventId = newValue.event?.id?.toString()
-    state.eventName = newValue.event?.name?.toString()
+    state.eventId = newValue.event?.id
+    state.eventName = newValue.event?.name
     // ticketExists.value = noTicketError.value.data.errors[0]
   }
 })
@@ -205,14 +213,18 @@ const refreshAll = async () => {
   }
 }
 
+function revertUpdateMode () {
+  isUpdateMode.value = !isUpdateMode.value
+}
+
 
 const boolOption = [
   {
-    label: "True",
+    label: "Да",
     value: "true"
   },
   {
-    label: "False",
+    label: "Нет",
     value: "false"
   }
 ]
@@ -223,15 +235,15 @@ const ticketTypes = [
     value: "VIP"
   },
   {
-    label: "Usual",
+    label: "Обычный",
     value: "USUAL"
   },
   {
-    label: "Budgetary",
+    label: "Бюджетный",
     value: "BUDGETARY"
   },
   {
-    label: "Cheap",
+    label: "Дешёвый",
     value: "CHEAP"
   }
 ]
