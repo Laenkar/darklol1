@@ -2,13 +2,16 @@
    <header>
       <nav>
          <NuxtLink to="/tickets">
-            <MyButton>TICKETS</MyButton>
+            <UButton color="purple"
+                     class="h-16 w-64 rounded-xl font-semibold text-2xl justify-center">БИЛЕТЫ</UButton>
          </NuxtLink>
          <NuxtLink to="/events">
-            <MyButton>EVENTS</MyButton>
+            <UButton color="purple"
+                     class="h-16 w-64 rounded-xl font-semibold text-2xl justify-center">СОБЫТИЯ</UButton>
          </NuxtLink>
          <NuxtLink to="/booking/sell">
-           <MyButton>BOOKING</MyButton>
+           <UButton color="purple"
+                    class="h-16 w-64 rounded-xl font-semibold text-2xl justify-center">БРОНИРОВАНИЕ</UButton>
          </NuxtLink>
       </nav>
       <slot />

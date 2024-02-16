@@ -8,19 +8,23 @@
       footer: { padding: 'p-4' }
    }">
       <template #header>
-         <h2 class="font-semibold text-xl text-gray-900 leading-tight text-center">
-            Ticket Service
-         </h2>
+         <h1 class="font-semibold text-4xl text-black leading-tight text-center">
+            Билеты
+         </h1>
         <div>
           <nav style="display: flex; justify-content: center">
 <!--            <MyButton @click="displayError">Notify</MyButton>-->
-            <MyButton v-on:click="revertFormActive" v-show="!formActive" style="width: 230px; height: 30px">Create ticket</MyButton>
-            <MyButton v-on:click="revertFormActive" v-show="formActive" style="width: 230px; height: 30px">Go to table</MyButton>
+            <UButton v-on:click="revertFormActive" v-show="!formActive" color="purple"
+                     class="h-8 w-80 rounded-xl font-semibold text-xl justify-center">Создать билет</UButton>
+            <UButton v-on:click="revertFormActive" v-show="formActive" color="purple"
+                     class="h-8 w-80 rounded-xl font-semibold text-xl justify-center">Перейти к таблице</UButton>
             <NuxtLink to="/tickets/type">
-              <MyButton style="width: 230px; height: 30px">Type options</MyButton>
+              <UButton color="purple"
+                       class="h-8 w-80 rounded-xl font-semibold text-xl justify-center">Расчёт по типам</UButton>
             </NuxtLink>
             <NuxtLink to="/tickets/discount">
-              <MyButton style="width: 230px; height: 30px">Discount options</MyButton>
+              <UButton color="purple"
+                       class="h-8 w-80 rounded-xl font-semibold text-xl justify-center">Расчёт скидок</UButton>
             </NuxtLink>
           </nav>
           <slot />
@@ -31,42 +35,42 @@
       <div v-show="!formActive" class="flex items-center gap-3 px-4 py-3">
         <UForm class="flex items-center gap-3 px-4 py-3">
           <div>
-            <UFormGroup label="field to filter" :ui="{ label: { base: 'text-black font-semibold' } }">
-                <USelect  v-model="filterField" :options="columns"/>
+            <UFormGroup label="Поле фильтрации" :ui="{ label: { base: 'text-black font-semibold' } }">
+                <USelect  v-model="filterField" :options="filterFields"/>
             </UFormGroup>
           </div>
           <div>
-            <UFormGroup label="filter option" :ui="{ label: { base: 'text-black font-semibold' } }">
+            <UFormGroup label="Опция фильтрации" :ui="{ label: { base: 'text-black font-semibold' } }">
                 <USelect v-model="filterOption" :options="filterOptions"/>
             </UFormGroup>
           </div>
           <div>
-            <UFormGroup label="filter value" :ui="{ label: { base: 'text-black font-semibold' } }">
+            <UFormGroup label="Значение фильтра" :ui="{ label: { base: 'text-black font-semibold' } }">
                 <UInput v-model="filterValue" type="text"/>
             </UFormGroup>
           </div>
           <div>
             <UButton v-on:click="applyFilter" color="purple" class="h-8 w-28 rounded-xl font-semibold justify-center">
-              Apply filter
+              Фильтровать
             </UButton>
           </div>
           <div>
-            <UFormGroup label="sort field" class="w-20" :ui="{ label: { base: 'text-black font-semibold' } }">
+            <UFormGroup label="Поле сортировки" :ui="{ label: { base: 'text-black font-semibold' } }">
               <USelect  v-model="sortField" :options="sortFields"/>
             </UFormGroup>
           </div>
           <div>
-            <UFormGroup label="sort mode" class="w-20" :ui="{ label: { base: 'text-black font-semibold' } }">
+            <UFormGroup label="Режим сортировки" :ui="{ label: { base: 'text-black font-semibold' } }">
               <USelect  v-model="sortMode" :options="sortModes"/>
             </UFormGroup>
           </div>
           <div>
             <UButton v-on:click="applySort" color="purple" class="h-8 w-28 rounded-xl font-semibold justify-center">
-              Apply sorting
+              Сортировать
             </UButton>
           </div>
           <div>
-            <UFormGroup label="page size" :ui="{ label: { base: 'text-black font-semibold' } }">
+            <UFormGroup label="Размер страницы" :ui="{ label: { base: 'text-black font-semibold' } }">
               <USelect v-model="size" :options="limitOptions"/>
             </UFormGroup>
           </div>
@@ -82,7 +86,9 @@
               :columns="columns"
               :loading="pending"
               @select="printIdOnClick"
-              :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }">
+              :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
+              :ui="{td: { color: 'text-black dark:text-black' }}"
+      >
       </UTable>
      <UCard v-show="formActive" class="w-full" :ui="{
       base: '',
@@ -92,76 +98,82 @@
       body: { padding: '', base: 'divide-y divide-gray-200 dark:divide-gray-700' },
       footer: { padding: 'p-4' }
    }">
-       <template v-show="currentRoute !== '/tickets'" #header">
-       <div class="flex items-center justify-between gap-3 px-4 py-3" v-show="currentRoute !== '/tickets'">
-         <MyButton style="width: 170px; height: 30px; background-color: brown">Delete ticket</MyButton>
-         <MyButton style="width: 170px; height: 30px; background-color: orange">Update ticket</MyButton>
-       </div>
-       </template>
 
        <UForm :validate="validate" :state="state" class="grid grid-cols-5 grid-flow-row gap-4 justify-between" @submit="onSubmit" >
 
        <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-          <UFormGroup label="Name" name="name" :ui="{ label: { base: 'text-black font-semibold' } }">
+          <UFormGroup label="Имя" name="name" :ui="{ label: { base: 'text-black font-semibold' } }">
             <UInput v-model="state.name" type="text"/>
           </UFormGroup>
        </div>
 
        <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-         <UFormGroup label="Coordinate X" name="coordinateX" :ui="{ label: { base: 'text-black font-semibold' } }">
+         <UFormGroup label="Координата X" name="coordinateX" :ui="{ label: { base: 'text-black font-semibold' } }">
             <UInput v-model="state.coordinateX" type="number" step="1" min="-686"/>
          </UFormGroup>
        </div>
 
        <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-         <UFormGroup label="Coordinate Y" name="coordinateY" :ui="{ label: { base: 'text-black font-semibold' } }">
+         <UFormGroup label="Координата Y" name="coordinateY" :ui="{ label: { base: 'text-black font-semibold' } }">
            <UInput v-model="state.coordinateY" type="number" step="0.01"/>
          </UFormGroup>
        </div>
 
        <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-          <UFormGroup label="Price" name="price" :ui="{ label: { base: 'text-black font-semibold' } }">
+          <UFormGroup label="Цена" name="price" :ui="{ label: { base: 'text-black font-semibold' } }">
             <UInput v-model="state.price" type="number" step="0.01" min="1" max="1000000000"/>
           </UFormGroup>
        </div>
 
        <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-          <UFormGroup label="Discount" name="discount" :ui="{ label: { base: 'text-black font-semibold' } }">
+          <UFormGroup label="Скидка" name="discount" :ui="{ label: { base: 'text-black font-semibold' } }">
             <UInput v-model="state.discount" type="number" step="0.01" min="1" max="100"/>
           </UFormGroup>
        </div>
 
        <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-          <UFormGroup label="Refundable" name="refundable" :ui="{ label: { base: 'text-black font-semibold' } }">
+          <UFormGroup label="Возвратный" name="refundable" :ui="{ label: { base: 'text-black font-semibold' } }">
             <USelect v-model="state.refundable" :options="boolOption" />
           </UFormGroup>
         </div>
 
        <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-          <UFormGroup label="Type" name="type" :ui="{ label: { base: 'text-black font-semibold' } }">
+          <UFormGroup label="Тип" name="type" :ui="{ label: { base: 'text-black font-semibold' } }">
               <USelect v-model="state.type" :options="ticketTypes" />
           </UFormGroup>
        </div>
 
        <div class="box-content h-20 w-48 p-4 border-4 border-purple-300 rounded-xl">
-          <UFormGroup label="Event id" name="eventId" :ui="{ label: { base: 'text-black font-semibold' } }">
+          <UFormGroup label="Номер ивента" name="eventId" :ui="{ label: { base: 'text-black font-semibold' } }">
             <UInput v-model="state.eventId" />
           </UFormGroup>
        </div>
 
        <div class="box-content h-20 w-48 p-4 ">
-          <UButton type="submit" color="purple" class="h-16 w-40 rounded-xl font-semibold text-xl justify-center">
+          <UButton type="submit"
+                   color="purple"
+                   class="h-16 w-40 rounded-xl font-semibold text-xl justify-center">
             Submit
           </UButton>
        </div>
 
       </UForm>
+       <UModal v-model="submitClick" prevent-close >
+         <div class="mx-auto max-w-md justify-items-center grid">
+         <div class="mx-auto max-w-md p-4 text-lg text-center font-semibold">
+           {{createTicketMessage}}
+         </div>
+         <UButton color="purple"
+                  class="rounded-xl font-semibold text-xl justify-center h-12 w-16"
+                  @click="submitClick=false"
+                  label="OK"
+         />
+         </div>
+       </UModal>
+      </UCard>
 
 
-</UCard>
-
-
-      <template #footer>
+      <template v-show="!formActive" #footer>
         <div class="flex flex-wrap justify-between items-center">
           <div>
                <span class="text-sm leading-5">
@@ -227,6 +239,8 @@ const router = useRouter()
 const config = useRuntimeConfig()
 const url = config.public.baseURL + '/tickets'
 const formActive = ref(false)
+const submitClick = ref(false)
+const createTicketMessage = ref(undefined)
 
 const filterField = ref('id')
 const filterOption = ref('[gt]=')
@@ -281,23 +295,17 @@ async function printIdOnClick (row) {
 
 //models
 const filterOptions = [{
-  label: 'greater than',
+  label: 'больше чем',
   value: '[gt]=',
 }, {
-  label: 'less than',
+  label: 'меньше чем',
   value: '[lt]='
 }, {
-  label: 'equal',
+  label: 'равно',
   value: '[eq]='
 }, {
-  label: 'not equal',
+  label: 'не равно',
   value: '[ne]='
-}, {
-  label: 'greater or equal',
-  value: '[gte]='
-}, {
-  label: 'less or equal',
-  value: '[lte]'
 }]
 
 const limitOptions = [{
@@ -310,71 +318,121 @@ const limitOptions = [{
   label: '50'
 }]
 
-const columns = [{
+const filterFields = [{
    key: 'id',
-   label: 'ID',
+   label: 'Номер',
    value: 'id'
 }, {
    key: 'name',
-   label: 'Name',
+   label: 'Наименование',
    value: 'name'
-}, {
-   key: 'coordinates',
-   label: 'Coordinates',
-   value: 'coordinates'
-}, {
+},
+//   {
+//    key: 'coordinates',
+//    label: 'Координаты',
+//    value: 'coordinates'
+// },
+  {
    key: 'creationDate',
-   label: 'Creation date',
+   label: 'Дата создания',
    value: 'creationDate'
 },{
    key: 'price',
-   label: 'Price',
+   label: 'Цена',
    value: 'price'
 },{
    key: 'discount',
-   label: 'Discount',
+   label: 'Скидка',
    value: 'discount'
 },{
    key: 'refundable',
-   label: 'Refundable',
+   label: 'Возвратный',
    value: 'refundable'
 },{
    key: 'type',
-   label: 'Type',
+   label: 'Тип',
    value: 'type'
+}
+// ,{
+//    key: 'event',
+//    label: 'Мероприятие',
+//    value: 'event'
+// }
+]
+
+const columns = [{
+  key: 'id',
+  label: 'Номер',
+  value: 'id'
+}, {
+  key: 'name',
+  label: 'Наименование',
+  value: 'name'
+}, {
+  key: 'coordinates.x',
+  label: 'Координата X',
+  value: 'coordinateX'
+}, {
+  key: 'coordinates.y',
+  label: 'Координата Y',
+  value: 'coordinateY'
+}, {
+  key: 'creationDate',
+  label: 'Дата создания',
+  value: 'creationDate'
 },{
-   key: 'event',
-   label: 'Event',
-   value: 'event'
+  key: 'price',
+  label: 'Цена',
+  value: 'price'
+},{
+  key: 'discount',
+  label: 'Скидка',
+  value: 'discount'
+},{
+  key: 'refundable',
+  label: 'Возвратный',
+  value: 'refundable'
+},{
+  key: 'type',
+  label: 'Тип',
+  value: 'type'
+},{
+  key: 'event.id',
+  label: 'Номер мероприятия',
+  value: 'eventId'
+},{
+  key: 'event.name',
+  label: 'Название мероприятия',
+  value: 'eventName'
 }]
 
 const sortFields = [{
   key: 'id',
-  label: 'ID',
+  label: 'Номер',
   value: 'id'
 }, {
   key: 'name',
-  label: 'Name',
+  label: 'Наименование',
   value: 'name'
 }, {
   key: 'creationDate',
-  label: 'Creation date',
+  label: 'Дата создания',
   value: 'creationDate'
 },{
   key: 'price',
-  label: 'Price',
+  label: 'Цена',
   value: 'price'
 },{
   key: 'discount',
-  label: 'Discount',
+  label: 'Скидка',
   value: 'discount'
 }]
 
 const sortModes = [{
-  label: 'ascending',
+  label: 'Возрастание',
   value: ''
 },{
-  label: 'descending',
+  label: 'Убывание',
   value: '-'
 }]
 
@@ -402,44 +460,42 @@ const boolOption = [
 
 const ticketTypes = [
   {
-    label: "VIP",
+    label: "ВИП",
     value: "VIP"
   },
   {
-    label: "Usual",
+    label: "Обычный",
     value: "USUAL"
   },
   {
-    label: "Budgetary",
+    label: "Бюджетный",
     value: "BUDGETARY"
   },
   {
-    label: "Cheap",
+    label: "Дешёвый",
     value: "CHEAP"
   }
 ]
 
 const validate = (state: any): FormError[] => {
   const errors = []
-  if (!state.name) errors.push({ path: 'name', message: 'Field is required!' })
-  if (!state.coordinateY) errors.push({ path: 'coordinateY', message: 'Field is required!' })
-  if (!state.coordinateX) errors.push({ path: 'coordinateX', message: 'Field is required!' })
-  if (!state.price) errors.push({ path: 'price', message: 'Field is required!' })
-  if (!state.discount) errors.push({ path: 'discount', message: 'Field is required!' })
-  if (!state.refundable) errors.push({ path: 'refundable', message: 'Field is required!' })
-  if (!state.eventId) errors.push({ path: 'eventId', message: 'Field is required!' })
+  if (!state.name) errors.push({ path: 'name', message: 'Поле необходимо заполнить!' })
+  if (!state.coordinateY) errors.push({ path: 'coordinateY', message: 'Поле необходимо заполнить!' })
+  if (!state.coordinateX) errors.push({ path: 'coordinateX', message: 'Поле необходимо заполнить!' })
+  if (!state.price) errors.push({ path: 'price', message: 'Поле необходимо заполнить!' })
+  if (!state.discount) errors.push({ path: 'discount', message: 'Поле необходимо заполнить!' })
+  if (!state.refundable) errors.push({ path: 'refundable', message: 'Поле необходимо заполнить!' })
+  if (!state.eventId) errors.push({ path: 'eventId', message: 'Поле необходимо заполнить!' })
 
-  // if (state.name.trim.length === 0) errors.push({ path: 'name', message: 'String cannot be empty!' })
-
-  if (state.name.length > 255) errors.push({ path: 'name', message: 'Name is too long! 255 characters max' })
+  if (state.name?.length > 255) errors.push({ path: 'name', message: 'Имя слишком длинное! Максимум 255 символов' })
 
   return errors
 }
 
 
-async function onSubmit (event: FormSubmitEvent<any>) {
+async function onSubmit () {
 
-  const {error: serverError} = await useFetch(url, {
+  const {error: createError} = await useFetch(url, {
     lazy: true,
     server: false,
     method: 'POST',
@@ -461,8 +517,16 @@ async function onSubmit (event: FormSubmitEvent<any>) {
         id: `${state.eventId}`,
       }
     }
-
   })
+
+  submitClick.value=true
+
+  if (createError.value?.data) {
+    createTicketMessage.value = createError.value.data.errors[0]
+  } else {
+    createTicketMessage.value = "Билет успешно создан!"
+  }
+
 }
 
 </script>
