@@ -74,6 +74,11 @@
               <USelect v-model="size" :options="limitOptions"/>
             </UFormGroup>
           </div>
+          <div>
+            <UButton v-on:click="refreshAll" color="purple" class="h-8 w-28 rounded-xl font-semibold justify-center">
+              Обновить
+            </UButton>
+          </div>
 
         </UForm>
 
@@ -261,6 +266,7 @@ const pageTo = computed(() => Math.min(page.value * size.value, pageTotal.value)
 
 //data fetch
 const {pending, data: tickets, error: serverError, refresh} = await useFetch(url, {
+  key: 'tickets',
   lazy: true,
   server: false,
   query: { page, size, filter, sort},
@@ -288,8 +294,19 @@ async function goToIdOnClick (row) {
 
 const refreshAll = async () => {
   submitClick.value = false
+  state.id = undefined
+  state.name = undefined
+  state.coordinateX = undefined
+  state.coordinateY = undefined
+  state.price = undefined
+  state.creationDate = undefined
+  state.discount = undefined
+  state.refundable = undefined
+  state.type = undefined
+  state.eventId = undefined
+  state.eventName = undefined
   try {
-    await refreshNuxtData()
+    await refreshNuxtData('tickets')
   } finally {
     submitClick.value = false
   }

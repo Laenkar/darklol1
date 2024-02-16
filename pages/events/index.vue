@@ -70,6 +70,11 @@
             <USelect v-model="size" :options="limitOptions"/>
           </UFormGroup>
         </div>
+        <div>
+          <UButton v-on:click="refreshAll" color="purple" class="h-8 w-28 rounded-xl font-semibold justify-center">
+            Обновить
+          </UButton>
+        </div>
 
       </UForm>
 
@@ -233,6 +238,7 @@ const pageTo = computed(() => Math.min(page.value * size.value, pageTotal.value)
 
 //data fetch
 const {pending, data: tickets, error: serverError, refresh} = await useFetch(url, {
+  key: 'events',
   lazy: true,
   server: false,
   query: { page, size, filter, sort},
@@ -255,13 +261,17 @@ function applySort () {
 }
 
 async function goToIdOnClick (row) {
-  await navigateTo(`/tickets/${row.id}`)
+  await navigateTo(`/events/${row.id}`)
 }
 
 const refreshAll = async () => {
   submitClick.value = false
+  state.name = undefined
+  state.date = undefined
+  state.minAge = undefined
+  state.eventType = undefined
   try {
-    await refreshNuxtData()
+    await refreshNuxtData('events')
   } finally {
     submitClick.value = false
   }
@@ -414,13 +424,6 @@ async function onSubmit () {
       "Accept": "application/json"
     },
     body: bodyParams
-    // body: {
-    //   name: `${state.name}`,
-    //   date: `${state.date}`,
-    //   minAge: `${state.minAge}`,
-    //   eventType: `${state.eventType}`
-    //   }
-
     }
   )
 

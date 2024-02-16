@@ -317,7 +317,3 @@ async function onDelete () {
 }
 
 </script>
-
-<style scoped>
-
-</style>
