@@ -18,7 +18,7 @@
                    class="h-8 w-80 rounded-xl font-semibold text-xl justify-center">Создать событие</UButton>
           <UButton v-on:click="revertFormActive" v-show="formActive" color="purple"
                    class="h-8 w-80 rounded-xl font-semibold text-xl justify-center">Перейти к таблице</UButton>
-<!--          <NuxtLink to="/tickets/type">-->
+<!--          <NuxtLink to="/events/type">-->
 <!--            <UButton color="purple"-->
 <!--                     class="h-8 w-80 rounded-xl font-semibold text-xl justify-center">Расчёт по типам</UButton>-->
 <!--          </NuxtLink>-->
@@ -83,7 +83,7 @@
 
     <UTable v-show="!formActive"
             v-model="selected"
-            :rows="tickets"
+            :rows="events"
             :columns="columns"
             :loading="pending"
             @select="goToIdOnClick"
@@ -227,7 +227,7 @@ const sort = ref(sortMode.value + sortField.value)
 const {data: pageTotal} = await useFetch(url + '/count', {
   lazy: true,
   server: false,
-  immediate: true,
+  // immediate: true,
   default: () => []
 })
 const page = ref(1)
@@ -237,7 +237,7 @@ const pageTo = computed(() => Math.min(page.value * size.value, pageTotal.value)
 
 
 //data fetch
-const {pending, data: tickets, error: serverError, refresh} = await useFetch(url, {
+const {pending, data: events} = await useFetch(url, {
   key: 'events',
   lazy: true,
   server: false,

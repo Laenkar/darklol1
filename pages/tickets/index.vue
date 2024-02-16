@@ -18,7 +18,7 @@
                      class="h-8 w-80 rounded-xl font-semibold text-xl justify-center">Создать билет</UButton>
             <UButton v-on:click="revertFormActive" v-show="formActive" color="purple"
                      class="h-8 w-80 rounded-xl font-semibold text-xl justify-center">Перейти к таблице</UButton>
-            <NuxtLink to="/tickets/type">
+            <NuxtLink to="/tickets/type/count">
               <UButton color="purple"
                        class="h-8 w-80 rounded-xl font-semibold text-xl justify-center">Расчёт по типам</UButton>
             </NuxtLink>
