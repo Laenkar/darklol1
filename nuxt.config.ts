@@ -44,6 +44,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       baseURL: 'https://localhost:9443',
+      baseURLSecond: 'https://localhost:9090'
     },
   },
 });

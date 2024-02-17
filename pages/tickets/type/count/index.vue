@@ -54,20 +54,6 @@ const errorHappened = ref(false)
 const type = ref("VIP")
 const sums = ref(0)
 
-
-
-// const {data: sums, pending, error} = await useFetch(url, {
-//   key: 'typeCount',
-//   lazy: true,
-//   server: false,
-//   method: 'POST',
-//   immediate: true,
-//   body: {
-//     type: `${type.value}`
-//   },
-//   default: () => []
-// })
-
 watch(errorHappened, (newError) => {
   if (newError) {
     errorHappened.value = true
